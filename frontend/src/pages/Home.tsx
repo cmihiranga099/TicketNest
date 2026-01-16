@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { isAdmin, subscribeAuthChange } from "../api/client";
 
 const featured = [
   {
@@ -62,6 +64,14 @@ const offers = [
 ];
 
 export function Home() {
+  const [showAdmin, setShowAdmin] = useState(isAdmin());
+
+  useEffect(() => {
+    const update = () => setShowAdmin(isAdmin());
+    const unsubscribe = subscribeAuthChange(update);
+    return unsubscribe;
+  }, []);
+
   return (
     <section className="home">
       <div className="container hero-slate">
@@ -74,7 +84,9 @@ export function Home() {
           <div className="hero-actions">
             <Link className="button" to="/movies">Now showing</Link>
             <Link className="button secondary" to="/booking/s1">Book tickets</Link>
-            <Link className="button ghost" to="/admin">Admin control</Link>
+            {showAdmin ? (
+              <Link className="button ghost" to="/admin">Admin control</Link>
+            ) : null}
           </div>
         </div>
         <div className="quick-booking fade-up delay-1">

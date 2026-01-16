@@ -8,7 +8,8 @@ import { Booking } from "./pages/Booking";
 import { Checkout } from "./pages/Checkout";
 import { Confirmation } from "./pages/Confirmation";
 import { AdminDashboard } from "./pages/AdminDashboard";
-import { Auth } from "./pages/Auth";
+import { SignIn } from "./pages/SignIn";
+import { SignUp } from "./pages/SignUp";
 
 export function App() {
   return (
@@ -17,7 +18,8 @@ export function App() {
       <main className="main">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/auth" element={<Auth />} />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/movies" element={<Movies />} />
           <Route path="/movies/:id" element={<MovieDetail />} />
           <Route path="/booking/:showtimeId" element={<Booking />} />

@@ -149,7 +149,7 @@ export function Booking() {
       <section className="container card">
         <h2>Sign in required</h2>
         <p>Please sign in to reserve seats.</p>
-        <Link className="button" to="/auth">Go to sign in</Link>
+        <Link className="button" to="/signin">Go to sign in</Link>
       </section>
     );
   }
