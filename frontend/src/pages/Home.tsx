@@ -20,6 +20,24 @@ const featured = [
     genre: "Adventure",
     runtime: "140 min",
     rating: "PG-13"
+  },
+  {
+    title: "Neon Tide",
+    genre: "Thriller",
+    runtime: "118 min",
+    rating: "R"
+  },
+  {
+    title: "Skyline Run",
+    genre: "Action",
+    runtime: "110 min",
+    rating: "PG-13"
+  },
+  {
+    title: "Golden Vale",
+    genre: "Family",
+    runtime: "96 min",
+    rating: "PG"
   }
 ];
 
@@ -27,7 +45,9 @@ const showtimes = [
   { film: "Solar Drift", hall: "Aurora Hall", time: "18:30", tag: "2D" },
   { film: "Midnight Deli", hall: "Echo Hall", time: "19:00", tag: "2D" },
   { film: "Copper Crown", hall: "Nova Hall", time: "20:15", tag: "Dolby" },
-  { film: "Solar Drift", hall: "Nova Hall", time: "21:30", tag: "IMAX" }
+  { film: "Neon Tide", hall: "Nova Hall", time: "21:30", tag: "Dolby" },
+  { film: "Skyline Run", hall: "Aurora Hall", time: "22:10", tag: "IMAX" },
+  { film: "Golden Vale", hall: "Echo Hall", time: "16:15", tag: "2D" }
 ];
 
 const experiences = [

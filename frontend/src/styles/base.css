@@ -564,3 +564,8 @@ textarea.input {
     padding: 24px 5vw 48px;
   }
 }
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {

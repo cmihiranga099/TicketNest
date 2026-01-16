@@ -10,6 +10,7 @@ import { Confirmation } from "./pages/Confirmation";
 import { AdminDashboard } from "./pages/AdminDashboard";
 import { SignIn } from "./pages/SignIn";
 import { SignUp } from "./pages/SignUp";
+import { Contact } from "./pages/Contact";
 
 export function App() {
   return (
@@ -25,6 +26,7 @@ export function App() {
           <Route path="/booking/:showtimeId" element={<Booking />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/confirmation" element={<Confirmation />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
       </main>

@@ -21,7 +21,7 @@ export function Navbar() {
         <Link className="button nav-cta" to="/booking/s1">Buy Tickets</Link>
         <Link to="/movies">Movies</Link>
         <a href="/#cinemas">Cinemas</a>
-        <a href="/#contact">Contact Us</a>
+        <Link to="/contact">Contact Us</Link>
         {showAdmin ? (
           <Link className="button ghost" to="/admin">Admin Control</Link>
         ) : (

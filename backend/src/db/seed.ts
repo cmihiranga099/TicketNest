@@ -21,9 +21,12 @@ async function seed() {
   const movieResult = await pool.query(
     `INSERT INTO movies (title, genre, duration_min, rating, synopsis, poster_url)
      VALUES
-       ('Solar Drift', 'Sci-Fi', 128, 'PG-13', 'A rogue navigator chases a drifting planet that emits strange signals.', null),
-       ('Midnight Deli', 'Drama', 102, 'PG', 'A chef opens a night-only diner that mends a fractured city.', null),
-       ('Copper Crown', 'Adventure', 140, 'PG-13', 'A forgotten kingdom hunts for the heir who never returned.', null)
+       ('Solar Drift', 'Sci-Fi', 128, 'PG-13', 'A rogue navigator chases a drifting planet that emits strange signals.', 'https://images.unsplash.com/photo-1489515217757-5fd1be406fef?q=80&w=1000&auto=format&fit=crop'),
+       ('Midnight Deli', 'Drama', 102, 'PG', 'A chef opens a night-only diner that mends a fractured city.', 'https://images.unsplash.com/photo-1489515217757-5fd1be406fef?q=80&w=1000&auto=format&fit=crop'),
+       ('Copper Crown', 'Adventure', 140, 'PG-13', 'A forgotten kingdom hunts for the heir who never returned.', 'https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?q=80&w=1000&auto=format&fit=crop'),
+       ('Neon Tide', 'Thriller', 118, 'R', 'A dockworker uncovers a smuggling ring hidden beneath the city lights.', 'https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?q=80&w=1000&auto=format&fit=crop'),
+       ('Skyline Run', 'Action', 110, 'PG-13', 'A courier must cross a locked-down metropolis before sunrise.', 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1000&auto=format&fit=crop'),
+       ('Golden Vale', 'Family', 96, 'PG', 'Two siblings discover a secret valley that grants one wish.', 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1000&auto=format&fit=crop')
      RETURNING id`
   );
 
@@ -73,7 +76,10 @@ async function seed() {
             ($5, $6, $7, $8),
             ($9, $10, $11, $12),
             ($13, $14, $15, $16),
-            ($17, $18, $19, $20)`,
+            ($17, $18, $19, $20),
+            ($21, $22, $23, $24),
+            ($25, $26, $27, $28),
+            ($29, $30, $31, $32)`,
     [
       movieIds[0],
       hallIds[0],
@@ -94,7 +100,19 @@ async function seed() {
       movieIds[1],
       hallIds[0],
       new Date(now.getTime() + 36 * 60 * 60 * 1000),
-      1300
+      1300,
+      movieIds[3],
+      hallIds[2],
+      new Date(now.getTime() + 8 * 60 * 60 * 1000),
+      1500,
+      movieIds[4],
+      hallIds[0],
+      new Date(now.getTime() + 12 * 60 * 60 * 1000),
+      1600,
+      movieIds[5],
+      hallIds[1],
+      new Date(now.getTime() + 20 * 60 * 60 * 1000),
+      1100
     ]
   );
 
