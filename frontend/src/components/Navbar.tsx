@@ -7,12 +7,11 @@ export function Navbar() {
         TicketNest
       </Link>
       <nav>
+        <a href="/#experiences">Experiences</a>
+        <a href="/#offers">Offers</a>
         <Link to="/movies">Movies</Link>
         <Link to="/booking/s1">Book</Link>
-        <Link to="/admin">Admin</Link>
-        <Link className="button ghost" to="/auth">
-          Sign In
-        </Link>
+        <Link className="button ghost" to="/auth">Sign In</Link>
       </nav>
     </header>
   );
