@@ -264,6 +264,11 @@ button {
   font-family: var(--font-body);
 }
 
+textarea.input {
+  min-height: 90px;
+  resize: vertical;
+}
+
 @media (max-width: 720px) {
   .navbar nav {
     display: none;

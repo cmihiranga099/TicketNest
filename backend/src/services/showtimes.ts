@@ -38,3 +38,7 @@ export async function createShowtime(input: { movie_id: string; hall_id: string;
   );
   return result.rows[0];
 }
+
+export async function deleteShowtime(id: string) {
+  await pool.query("DELETE FROM showtimes WHERE id = $1", [id]);
+}

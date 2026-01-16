@@ -5,8 +5,13 @@
 2. Copy `backend/.env.example` to `backend/.env` and set Stripe keys and webhook secret.
 3. Copy `frontend/.env.example` to `frontend/.env` and set the API base URL if needed.
 4. Install dependencies in `backend/` and `frontend/`.
-5. Start API: `npm run dev` in `backend/`.
-6. Start web: `npm run dev` in `frontend/`.
+5. Seed starter data: `npm run seed` in `backend/`.
+6. Start API: `npm run dev` in `backend/`.
+7. Start web: `npm run dev` in `frontend/`.
+
+## Seed admin user
+- Email: `admin@ticketnest.test`
+- Password: `admin1234`
 
 ## Operations
 - Rotate JWT and Stripe webhook secrets every 90 days.

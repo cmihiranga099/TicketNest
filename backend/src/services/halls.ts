@@ -70,3 +70,7 @@ export async function createSeatsBulk(
 
   return result.rows;
 }
+
+export async function deleteHall(id: string) {
+  await pool.query("DELETE FROM halls WHERE id = $1", [id]);
+}

@@ -12,5 +12,6 @@ Cinema hall ticket booking system with user authentication, showtime management,
 2. Copy `backend/.env.example` to `backend/.env` and update secrets.
 3. Install dependencies in `backend/` and `frontend/`.
 4. Copy `frontend/.env.example` to `frontend/.env` and set API URL if needed.
-5. Start API: `npm run dev` in `backend/`.
-6. Start web: `npm run dev` in `frontend/`.
+5. Seed starter data: `npm run seed` in `backend/`.
+6. Start API: `npm run dev` in `backend/`.
+7. Start web: `npm run dev` in `frontend/`.

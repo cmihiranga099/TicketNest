@@ -24,11 +24,14 @@ Base URL: `http://localhost:4000`
 - `GET /halls/:id/seats`
 - `POST /halls` (admin)
 - `POST /halls/:id/seats` (admin)
+- `POST /halls/:id/seats/bulk` (admin)
+- `DELETE /halls/:id` (admin)
 
 ## Showtimes
 - `GET /showtimes?movieId=`
 - `GET /showtimes/:id`
 - `POST /showtimes` (admin)
+- `DELETE /showtimes/:id` (admin)
 
 ## Bookings
 - `GET /bookings/me`

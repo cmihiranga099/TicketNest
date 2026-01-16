@@ -1,6 +1,6 @@
 ﻿import { Router } from "express";
 import { showtimeSchema } from "../validation/schemas.js";
-import { listShowtimes, getShowtime, createShowtime } from "../services/showtimes.js";
+import { listShowtimes, getShowtime, createShowtime, deleteShowtime } from "../services/showtimes.js";
 import { requireAuth, requireAdmin } from "../middleware/auth.js";
 
 export const showtimesRouter = Router();
@@ -26,4 +26,9 @@ showtimesRouter.post("/", requireAuth, requireAdmin, async (req, res) => {
   }
   const showtime = await createShowtime(parsed.data);
   res.status(201).json({ showtime });
+});
+
+showtimesRouter.delete("/:id", requireAuth, requireAdmin, async (req, res) => {
+  await deleteShowtime(req.params.id);
+  res.status(204).send();
 });
