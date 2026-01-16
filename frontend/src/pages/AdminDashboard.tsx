@@ -4,6 +4,11 @@ import { api } from "../api/client";
 type Movie = {
   id: string;
   title: string;
+  genre: string;
+  duration_min: number;
+  rating: string;
+  synopsis: string;
+  poster_url?: string;
 };
 
 type Hall = {
@@ -16,6 +21,7 @@ type Showtime = {
   movie_title: string;
   hall_name: string;
   starts_at: string;
+  base_price_cents: number;
 };
 
 type SalesRow = {
@@ -31,7 +37,9 @@ export function AdminDashboard() {
   const [report, setReport] = useState<SalesRow[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
+  const [selectedMovieId, setSelectedMovieId] = useState<string>("");
   const [movieForm, setMovieForm] = useState({
     title: "",
     genre: "",
@@ -59,34 +67,54 @@ export function AdminDashboard() {
     [hallForm.rows]
   );
 
-  useEffect(() => {
-    let mounted = true;
-    async function load() {
-      try {
-        const [moviesData, hallsData, showtimesData, reportData] = await Promise.all([
-          api.request<{ movies: Movie[] }>("/movies"),
-          api.request<{ halls: Hall[] }>("/halls"),
-          api.request<{ showtimes: Showtime[] }>("/showtimes"),
-          api.request<{ report: SalesRow[] }>("/admin/reports/sales")
-        ]);
-        if (!mounted) {
-          return;
-        }
-        setMovies(moviesData.movies);
-        setHalls(hallsData.halls);
-        setShowtimes(showtimesData.showtimes);
-        setReport(reportData.report);
-      } catch (err) {
-        if (mounted) {
-          setError((err as Error).message);
-        }
-      }
+  async function loadData() {
+    setLoading(true);
+    try {
+      const [moviesData, hallsData, showtimesData, reportData] = await Promise.all([
+        api.request<{ movies: Movie[] }>("/movies"),
+        api.request<{ halls: Hall[] }>("/halls"),
+        api.request<{ showtimes: Showtime[] }>("/showtimes"),
+        api.request<{ report: SalesRow[] }>("/admin/reports/sales")
+      ]);
+      setMovies(moviesData.movies);
+      setHalls(hallsData.halls);
+      setShowtimes(showtimesData.showtimes);
+      setReport(reportData.report);
+      setError(null);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setLoading(false);
     }
-    load();
-    return () => {
-      mounted = false;
-    };
+  }
+
+  useEffect(() => {
+    loadData();
   }, []);
+
+  const handleSelectMovie = (movieId: string) => {
+    setSelectedMovieId(movieId);
+    const movie = movies.find((item) => item.id === movieId);
+    if (!movie) {
+      setMovieForm({
+        title: "",
+        genre: "",
+        duration_min: 120,
+        rating: "PG",
+        synopsis: "",
+        poster_url: ""
+      });
+      return;
+    }
+    setMovieForm({
+      title: movie.title,
+      genre: movie.genre,
+      duration_min: movie.duration_min,
+      rating: movie.rating,
+      synopsis: movie.synopsis,
+      poster_url: movie.poster_url || ""
+    });
+  };
 
   const handleCreateMovie = async () => {
     setError(null);
@@ -99,9 +127,42 @@ export function AdminDashboard() {
           duration_min: Number(movieForm.duration_min)
         })
       });
-      const moviesData = await api.request<{ movies: Movie[] }>("/movies");
-      setMovies(moviesData.movies);
+      await loadData();
       setMessage("Movie created.");
+    } catch (err) {
+      setError((err as Error).message);
+    }
+  };
+
+  const handleUpdateMovie = async () => {
+    if (!selectedMovieId) {
+      setError("Select a movie to update.");
+      return;
+    }
+    setError(null);
+    setMessage(null);
+    try {
+      await api.request(`/movies/${selectedMovieId}`, {
+        method: "PUT",
+        body: JSON.stringify({
+          ...movieForm,
+          duration_min: Number(movieForm.duration_min)
+        })
+      });
+      await loadData();
+      setMessage("Movie updated.");
+    } catch (err) {
+      setError((err as Error).message);
+    }
+  };
+
+  const handleDeleteMovie = async (movieId: string) => {
+    setError(null);
+    setMessage(null);
+    try {
+      await api.request(`/movies/${movieId}`, { method: "DELETE" });
+      await loadData();
+      setMessage("Movie deleted.");
     } catch (err) {
       setError((err as Error).message);
     }
@@ -131,9 +192,20 @@ export function AdminDashboard() {
         })
       });
 
-      const hallsData = await api.request<{ halls: Hall[] }>("/halls");
-      setHalls(hallsData.halls);
+      await loadData();
       setMessage("Hall and seats created.");
+    } catch (err) {
+      setError((err as Error).message);
+    }
+  };
+
+  const handleDeleteHall = async (hallId: string) => {
+    setError(null);
+    setMessage(null);
+    try {
+      await api.request(`/halls/${hallId}`, { method: "DELETE" });
+      await loadData();
+      setMessage("Hall deleted.");
     } catch (err) {
       setError((err as Error).message);
     }
@@ -152,9 +224,20 @@ export function AdminDashboard() {
           base_price_cents: Number(showtimeForm.base_price_cents)
         })
       });
-      const showtimesData = await api.request<{ showtimes: Showtime[] }>("/showtimes");
-      setShowtimes(showtimesData.showtimes);
+      await loadData();
       setMessage("Showtime created.");
+    } catch (err) {
+      setError((err as Error).message);
+    }
+  };
+
+  const handleDeleteShowtime = async (showtimeId: string) => {
+    setError(null);
+    setMessage(null);
+    try {
+      await api.request(`/showtimes/${showtimeId}`, { method: "DELETE" });
+      await loadData();
+      setMessage("Showtime deleted.");
     } catch (err) {
       setError((err as Error).message);
     }
@@ -171,15 +254,24 @@ export function AdminDashboard() {
 
       <div className="grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))" }}>
         <div className="card">
-          <h3>Add movie</h3>
+          <h3>Add or edit movie</h3>
           <div className="form">
+            <select className="input" value={selectedMovieId} onChange={(e) => handleSelectMovie(e.target.value)}>
+              <option value="">New movie</option>
+              {movies.map((movie) => (
+                <option key={movie.id} value={movie.id}>{movie.title}</option>
+              ))}
+            </select>
             <input className="input" placeholder="Title" value={movieForm.title} onChange={(e) => setMovieForm({ ...movieForm, title: e.target.value })} />
             <input className="input" placeholder="Genre" value={movieForm.genre} onChange={(e) => setMovieForm({ ...movieForm, genre: e.target.value })} />
             <input className="input" placeholder="Duration (min)" type="number" value={movieForm.duration_min} onChange={(e) => setMovieForm({ ...movieForm, duration_min: Number(e.target.value) })} />
             <input className="input" placeholder="Rating" value={movieForm.rating} onChange={(e) => setMovieForm({ ...movieForm, rating: e.target.value })} />
             <input className="input" placeholder="Poster URL" value={movieForm.poster_url} onChange={(e) => setMovieForm({ ...movieForm, poster_url: e.target.value })} />
             <textarea className="input" placeholder="Synopsis" value={movieForm.synopsis} onChange={(e) => setMovieForm({ ...movieForm, synopsis: e.target.value })} />
-            <button className="button" onClick={handleCreateMovie}>Create movie</button>
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+              <button className="button" onClick={handleCreateMovie}>Create movie</button>
+              <button className="button secondary" onClick={handleUpdateMovie}>Update movie</button>
+            </div>
           </div>
         </div>
 
@@ -217,16 +309,50 @@ export function AdminDashboard() {
 
       <div className="grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))" }}>
         <div className="card">
-          <h3>Current showtimes</h3>
+          <h3>Movies</h3>
+          {loading ? <p>Loading...</p> : null}
           <div className="grid" style={{ gap: 10 }}>
-            {showtimes.map((showtime) => (
-              <div key={showtime.id}>
-                <strong>{showtime.movie_title}</strong>
-                <p>{showtime.hall_name} - {new Date(showtime.starts_at).toLocaleString()}</p>
+            {movies.map((movie) => (
+              <div key={movie.id} style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+                <div>
+                  <strong>{movie.title}</strong>
+                  <p>{movie.genre} - {movie.duration_min} min - {movie.rating}</p>
+                </div>
+                <button className="button ghost" onClick={() => handleDeleteMovie(movie.id)}>Delete</button>
               </div>
             ))}
           </div>
         </div>
+
+        <div className="card">
+          <h3>Halls</h3>
+          <div className="grid" style={{ gap: 10 }}>
+            {halls.map((hall) => (
+              <div key={hall.id} style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+                <strong>{hall.name}</strong>
+                <button className="button ghost" onClick={() => handleDeleteHall(hall.id)}>Delete</button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="card">
+          <h3>Showtimes</h3>
+          <div className="grid" style={{ gap: 10 }}>
+            {showtimes.map((showtime) => (
+              <div key={showtime.id} style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+                <div>
+                  <strong>{showtime.movie_title}</strong>
+                  <p>{showtime.hall_name} - {new Date(showtime.starts_at).toLocaleString()}</p>
+                </div>
+                <button className="button ghost" onClick={() => handleDeleteShowtime(showtime.id)}>Delete</button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))" }}>
         <div className="card">
           <h3>Sales (last 30 days)</h3>
           <div className="grid" style={{ gap: 10 }}>

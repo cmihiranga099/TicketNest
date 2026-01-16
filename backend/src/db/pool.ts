@@ -1,6 +1,11 @@
-﻿import pg from "pg";
+import dotenv from "dotenv";
+import pg from "pg";
 
 const { Pool } = pg;
+
+if (!process.env.DATABASE_URL) {
+  dotenv.config();
+}
 
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is required");

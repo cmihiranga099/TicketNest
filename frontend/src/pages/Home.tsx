@@ -15,7 +15,9 @@ export function Home() {
         </div>
         <div className="hero-panel fade-up delay-1">
           <h3>Tonight's flow</h3>
-          <p>Choose movie -> confirm showtime -> select seats -> pay -> get ticket.</p>
+          <p>
+            Choose movie {"->"} confirm showtime {"->"} select seats {"->"} pay {"->"} get ticket.
+          </p>
           <div className="stats">
             <div className="stat-card">
               <strong>24 halls</strong>
