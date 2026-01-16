@@ -1,17 +1,56 @@
-﻿import { pool } from "../db/pool.js";
-import { v4 as uuidv4 } from "uuid";
+﻿import Stripe from "stripe";
+import { pool } from "../db/pool.js";
 
-export async function createPayment(input: { booking_id: string; provider: "stripe" | "paypal"; amount_cents: number }) {
-  const providerRef = uuidv4();
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY || "";
+const stripe = new Stripe(stripeSecretKey, {
+  apiVersion: "2024-06-20"
+});
+
+export async function createStripeCheckout(input: {
+  booking_id: string;
+  amount_cents: number;
+  currency?: string;
+  description: string;
+  customer_email?: string;
+}) {
+  if (!stripeSecretKey) {
+    throw new Error("STRIPE_SECRET_KEY is not configured");
+  }
+
+  const session = await stripe.checkout.sessions.create({
+    mode: "payment",
+    payment_method_types: ["card"],
+    customer_email: input.customer_email,
+    line_items: [
+      {
+        price_data: {
+          currency: input.currency || "usd",
+          unit_amount: input.amount_cents,
+          product_data: {
+            name: "TicketNest Booking",
+            description: input.description
+          }
+        },
+        quantity: 1
+      }
+    ],
+    metadata: {
+      booking_id: input.booking_id
+    },
+    success_url: `${process.env.APP_BASE_URL}/confirmation`,
+    cancel_url: `${process.env.APP_BASE_URL}/checkout`
+  });
+
   const result = await pool.query(
-    `INSERT INTO payments (booking_id, provider, amount_cents, provider_ref)
-     VALUES ($1, $2, $3, $4)
+    `INSERT INTO payments (booking_id, provider, amount_cents, provider_ref, status)
+     VALUES ($1, $2, $3, $4, 'PENDING')
      RETURNING id, booking_id, provider, amount_cents, currency, status, provider_ref`,
-    [input.booking_id, input.provider, input.amount_cents, providerRef]
+    [input.booking_id, "stripe", input.amount_cents, session.id]
   );
+
   return {
     payment: result.rows[0],
-    payment_url: `https://payments.example/${input.provider}/${providerRef}`
+    payment_url: session.url
   };
 }
 

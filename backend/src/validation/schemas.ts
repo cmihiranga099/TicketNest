@@ -37,6 +37,12 @@ export const hallSchema = z.object({
   layout_json: z.record(z.any())
 });
 
+export const seatsBulkSchema = z.object({
+  rows: z.array(z.string().min(1)).min(1),
+  seatsPerRow: z.number().int().positive(),
+  seat_type: z.string().optional()
+});
+
 export const showtimeSchema = z.object({
   movie_id: z.string().uuid(),
   hall_id: z.string().uuid(),
@@ -51,5 +57,5 @@ export const bookingInitiateSchema = z.object({
 
 export const paymentCreateSchema = z.object({
   booking_id: z.string().uuid(),
-  provider: z.enum(["stripe", "paypal"]) 
+  provider: z.enum(["stripe"])
 });

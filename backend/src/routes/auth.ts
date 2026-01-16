@@ -1,7 +1,7 @@
 ﻿import { Router } from "express";
 import { registerSchema, loginSchema, passwordResetRequestSchema, passwordResetSchema } from "../validation/schemas.js";
 import { createUser, getUserByEmail, updatePassword, createPasswordReset, consumePasswordReset, getUserById, updateProfile } from "../services/users.js";
-import { signAccessToken, signRefreshToken, verifyAccessToken } from "../utils/jwt.js";
+import { signAccessToken, signRefreshToken, verifyRefreshToken } from "../utils/jwt.js";
 import { verifyPassword } from "../utils/password.js";
 import { requireAuth } from "../middleware/auth.js";
 import { v4 as uuidv4 } from "uuid";
@@ -58,7 +58,7 @@ authRouter.post("/refresh", async (req, res) => {
     return res.status(401).json({ error: "Missing authorization header" });
   }
   try {
-    const payload = verifyAccessToken(header.replace("Bearer ", ""));
+    const payload = verifyRefreshToken(header.replace("Bearer ", ""));
     const accessToken = signAccessToken({ id: payload.id, role: payload.role, email: payload.email });
     res.json({ accessToken });
   } catch (error) {

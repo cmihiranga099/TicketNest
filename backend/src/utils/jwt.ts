@@ -17,3 +17,7 @@ export function signRefreshToken(payload: { id: string; role: UserRole; email: s
 export function verifyAccessToken(token: string) {
   return jwt.verify(token, jwtSecret) as { id: string; role: UserRole; email: string };
 }
+
+export function verifyRefreshToken(token: string) {
+  return jwt.verify(token, jwtRefreshSecret) as { id: string; role: UserRole; email: string };
+}

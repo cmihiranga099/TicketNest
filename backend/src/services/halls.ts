@@ -42,3 +42,31 @@ export async function createSeat(hallId: string, input: { row_label: string; sea
   );
   return result.rows[0];
 }
+
+export async function createSeatsBulk(
+  hallId: string,
+  input: { rows: string[]; seatsPerRow: number; seat_type?: string }
+) {
+  const rowLabels: string[] = [];
+  const seatNumbers: number[] = [];
+  const seatTypes: string[] = [];
+
+  for (const row of input.rows) {
+    for (let seatNumber = 1; seatNumber <= input.seatsPerRow; seatNumber += 1) {
+      rowLabels.push(row);
+      seatNumbers.push(seatNumber);
+      seatTypes.push(input.seat_type || "STANDARD");
+    }
+  }
+
+  const result = await pool.query(
+    `INSERT INTO seats (hall_id, row_label, seat_number, seat_type)
+     SELECT $1, row_label, seat_number, seat_type
+     FROM UNNEST($2::text[], $3::int[], $4::text[]) AS t(row_label, seat_number, seat_type)
+     ON CONFLICT (hall_id, row_label, seat_number) DO NOTHING
+     RETURNING id, row_label, seat_number, seat_type, is_active`,
+    [hallId, rowLabels, seatNumbers, seatTypes]
+  );
+
+  return result.rows;
+}

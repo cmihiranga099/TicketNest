@@ -1,7 +1,8 @@
 ﻿import { Router } from "express";
 import { requireAuth } from "../middleware/auth.js";
+import Stripe from "stripe";
 import { paymentCreateSchema } from "../validation/schemas.js";
-import { createPayment, markPaymentPaid } from "../services/payments.js";
+import { createStripeCheckout, markPaymentPaid } from "../services/payments.js";
 import { getBookingById, confirmBooking } from "../services/bookings.js";
 
 export const paymentsRouter = Router();
@@ -20,27 +21,43 @@ paymentsRouter.post("/create", requireAuth, async (req, res) => {
     return res.status(403).json({ error: "Not allowed" });
   }
 
-  const response = await createPayment({
+  const response = await createStripeCheckout({
     booking_id: booking.id,
-    provider: parsed.data.provider,
-    amount_cents: booking.total_amount_cents
+    amount_cents: booking.total_amount_cents,
+    description: `Booking ${booking.id}`,
+    customer_email: req.user!.email
   });
 
   res.json(response);
 });
 
 paymentsRouter.post("/webhook", async (req, res) => {
-  const secret = req.headers["x-webhook-secret"];
-  if (!secret || secret !== process.env.PAYMENT_WEBHOOK_SECRET) {
-    return res.status(401).json({ error: "Invalid webhook secret" });
+  const signature = req.headers["stripe-signature"];
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || "";
+  const stripeSecretKey = process.env.STRIPE_SECRET_KEY || "";
+
+  if (!signature || !webhookSecret || !stripeSecretKey) {
+    return res.status(400).json({ error: "Stripe webhook not configured" });
   }
 
-  const { provider_ref } = req.body;
-  const payment = await markPaymentPaid(provider_ref);
-  if (!payment) {
-    return res.status(404).json({ error: "Payment not found" });
+  const stripe = new Stripe(stripeSecretKey, { apiVersion: "2024-06-20" });
+  let event: Stripe.Event;
+
+  try {
+    event = stripe.webhooks.constructEvent(req.body, signature as string, webhookSecret);
+  } catch (error) {
+    return res.status(400).json({ error: "Invalid Stripe signature" });
   }
 
-  const booking = await confirmBooking(payment.booking_id);
-  res.json({ payment, booking });
+  if (event.type === "checkout.session.completed") {
+    const session = event.data.object as Stripe.Checkout.Session;
+    const payment = await markPaymentPaid(session.id);
+    if (!payment) {
+      return res.status(404).json({ error: "Payment not found" });
+    }
+    const booking = await confirmBooking(payment.booking_id);
+    return res.json({ payment, booking });
+  }
+
+  return res.json({ received: true });
 });
