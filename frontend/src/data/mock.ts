@@ -1,57 +1,57 @@
 export const movies = [
   {
     id: "m1",
-    title: "Solar Drift",
+    title: "Dune: Part Two",
     genre: "Sci-Fi",
-    duration_min: 128,
+    duration_min: 166,
     rating: "PG-13",
-    synopsis: "A rogue navigator chases a drifting planet that emits strange signals.",
-    poster_url: "https://images.unsplash.com/photo-1489515217757-5fd1be406fef?q=80&w=1000&auto=format&fit=crop"
+    synopsis: "Paul Atreides unites with the Fremen while a war for Arrakis tests prophecy and power.",
+    poster_url: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=1000&auto=format&fit=crop"
   },
   {
     id: "m2",
-    title: "Midnight Deli",
+    title: "Oppenheimer",
     genre: "Drama",
-    duration_min: 102,
-    rating: "PG",
-    synopsis: "A chef opens a night-only diner that mends a fractured city.",
-    poster_url: "https://images.unsplash.com/photo-1489515217757-5fd1be406fef?q=80&w=1000&auto=format&fit=crop"
+    duration_min: 180,
+    rating: "R",
+    synopsis: "The story of J. Robert Oppenheimer and the race to build the first atomic bomb.",
+    poster_url: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=1000&auto=format&fit=crop"
   },
   {
     id: "m3",
-    title: "Copper Crown",
-    genre: "Adventure",
-    duration_min: 140,
-    rating: "PG-13",
-    synopsis: "A forgotten kingdom hunts for the heir who never returned.",
-    poster_url: "https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?q=80&w=1000&auto=format&fit=crop"
+    title: "Inside Out 2",
+    genre: "Animation",
+    duration_min: 96,
+    rating: "PG",
+    synopsis: "Riley navigates a new school year as unexpected emotions join Headquarters.",
+    poster_url: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=1000&auto=format&fit=crop"
   },
   {
     id: "m4",
-    title: "Neon Tide",
-    genre: "Thriller",
-    duration_min: 118,
-    rating: "R",
-    synopsis: "A dockworker uncovers a smuggling ring hidden beneath the city lights.",
-    poster_url: "https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?q=80&w=1000&auto=format&fit=crop"
+    title: "Godzilla x Kong: The New Empire",
+    genre: "Action",
+    duration_min: 115,
+    rating: "PG-13",
+    synopsis: "Godzilla and Kong face a hidden threat that could end their world.",
+    poster_url: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1000&auto=format&fit=crop"
   },
   {
     id: "m5",
-    title: "Skyline Run",
-    genre: "Action",
-    duration_min: 110,
+    title: "A Quiet Place: Day One",
+    genre: "Horror",
+    duration_min: 99,
     rating: "PG-13",
-    synopsis: "A courier must cross a locked-down metropolis before sunrise.",
+    synopsis: "A woman in New York survives the day the world goes silent.",
     poster_url: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1000&auto=format&fit=crop"
   },
   {
     id: "m6",
-    title: "Golden Vale",
-    genre: "Family",
-    duration_min: 96,
+    title: "Spider-Man: Across the Spider-Verse",
+    genre: "Animation",
+    duration_min: 140,
     rating: "PG",
-    synopsis: "Two siblings discover a secret valley that grants one wish.",
-    poster_url: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1000&auto=format&fit=crop"
+    synopsis: "Miles Morales teams with Spider-heroes across the multiverse to stop a new threat.",
+    poster_url: "https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?q=80&w=1000&auto=format&fit=crop"
   }
 ];
 

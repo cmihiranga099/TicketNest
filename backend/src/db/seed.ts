@@ -21,12 +21,12 @@ async function seed() {
   const movieResult = await pool.query(
     `INSERT INTO movies (title, genre, duration_min, rating, synopsis, poster_url)
      VALUES
-       ('Solar Drift', 'Sci-Fi', 128, 'PG-13', 'A rogue navigator chases a drifting planet that emits strange signals.', 'https://images.unsplash.com/photo-1489515217757-5fd1be406fef?q=80&w=1000&auto=format&fit=crop'),
-       ('Midnight Deli', 'Drama', 102, 'PG', 'A chef opens a night-only diner that mends a fractured city.', 'https://images.unsplash.com/photo-1489515217757-5fd1be406fef?q=80&w=1000&auto=format&fit=crop'),
-       ('Copper Crown', 'Adventure', 140, 'PG-13', 'A forgotten kingdom hunts for the heir who never returned.', 'https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?q=80&w=1000&auto=format&fit=crop'),
-       ('Neon Tide', 'Thriller', 118, 'R', 'A dockworker uncovers a smuggling ring hidden beneath the city lights.', 'https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?q=80&w=1000&auto=format&fit=crop'),
-       ('Skyline Run', 'Action', 110, 'PG-13', 'A courier must cross a locked-down metropolis before sunrise.', 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1000&auto=format&fit=crop'),
-       ('Golden Vale', 'Family', 96, 'PG', 'Two siblings discover a secret valley that grants one wish.', 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1000&auto=format&fit=crop')
+       ('Dune: Part Two', 'Sci-Fi', 166, 'PG-13', 'Paul Atreides unites with the Fremen while a war for Arrakis tests prophecy and power.', 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=1000&auto=format&fit=crop'),
+       ('Oppenheimer', 'Drama', 180, 'R', 'The story of J. Robert Oppenheimer and the race to build the first atomic bomb.', 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=1000&auto=format&fit=crop'),
+       ('Inside Out 2', 'Animation', 96, 'PG', 'Riley navigates a new school year as unexpected emotions join Headquarters.', 'https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=1000&auto=format&fit=crop'),
+       ('Godzilla x Kong: The New Empire', 'Action', 115, 'PG-13', 'Godzilla and Kong face a hidden threat that could end their world.', 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1000&auto=format&fit=crop'),
+       ('A Quiet Place: Day One', 'Horror', 99, 'PG-13', 'A woman in New York survives the day the world goes silent.', 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1000&auto=format&fit=crop'),
+       ('Spider-Man: Across the Spider-Verse', 'Animation', 140, 'PG', 'Miles Morales teams with Spider-heroes across the multiverse to stop a new threat.', 'https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?q=80&w=1000&auto=format&fit=crop')
      RETURNING id`
   );
 

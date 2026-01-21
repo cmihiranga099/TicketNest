@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { api, setToken } from "../api/client";
+import { Link, useNavigate } from "react-router-dom";
+import { api, isAdmin, setToken } from "../api/client";
 
 export function SignIn() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState<string | null>(null);
@@ -16,7 +17,12 @@ export function SignIn() {
         body: JSON.stringify({ email, password })
       });
       setToken(response.accessToken);
+      if (isAdmin()) {
+        navigate("/admin");
+        return;
+      }
       setMessage("Signed in successfully.");
+      navigate("/");
     } catch (err) {
       setError((err as Error).message);
     }
