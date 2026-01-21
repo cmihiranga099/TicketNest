@@ -1,5 +1,6 @@
-﻿import { pool } from "../db/pool.js";
+import { pool } from "../db/pool.js";
 import { v4 as uuidv4 } from "uuid";
+import { emitSeatBooked, emitSeatLocks } from "../socket.js";
 
 const LOCK_MINUTES = 10;
 
@@ -11,10 +12,13 @@ export async function initiateBooking(input: { user_id: string; showtime_id: str
     await client.query("DELETE FROM seat_locks WHERE expires_at <= NOW()");
 
     const existingLocks = await client.query(
-      "SELECT seat_id FROM seat_locks WHERE showtime_id = $1 AND seat_id = ANY($2::uuid[]) AND expires_at > NOW()",
+      `SELECT seat_id, user_id
+       FROM seat_locks
+       WHERE showtime_id = $1 AND seat_id = ANY($2::uuid[]) AND expires_at > NOW()`,
       [input.showtime_id, input.seat_ids]
     );
-    if (existingLocks.rowCount && existingLocks.rowCount > 0) {
+    const lockedByOthers = existingLocks.rows.filter((row) => row.user_id !== input.user_id);
+    if (lockedByOthers.length > 0) {
       throw new Error("Some seats are temporarily locked");
     }
 
@@ -42,7 +46,10 @@ export async function initiateBooking(input: { user_id: string; showtime_id: str
     await client.query(
       `INSERT INTO seat_locks (showtime_id, seat_id, user_id, expires_at)
        SELECT $1, seat_id, $2, $3
-       FROM UNNEST($4::uuid[]) AS seat_id`,
+       FROM UNNEST($4::uuid[]) AS seat_id
+       ON CONFLICT (showtime_id, seat_id)
+       DO UPDATE SET expires_at = EXCLUDED.expires_at
+       WHERE seat_locks.user_id = EXCLUDED.user_id`,
       [input.showtime_id, input.user_id, expiresAt, input.seat_ids]
     );
 
@@ -62,6 +69,7 @@ export async function initiateBooking(input: { user_id: string; showtime_id: str
     );
 
     await client.query("COMMIT");
+    emitSeatLocks(input.showtime_id, input.seat_ids);
     return bookingResult.rows[0];
   } catch (error) {
     await client.query("ROLLBACK");
@@ -75,6 +83,12 @@ export async function confirmBooking(bookingId: string) {
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
+
+    const seatResult = await client.query(
+      "SELECT seat_id FROM booking_seats WHERE booking_id = $1",
+      [bookingId]
+    );
+    const seatIds = seatResult.rows.map((row) => row.seat_id as string);
 
     const bookingCode = uuidv4().replace(/-/g, "").slice(0, 12).toUpperCase();
     const qrPayload = `TICKETNEST:${bookingId}:${bookingCode}`;
@@ -90,7 +104,8 @@ export async function confirmBooking(bookingId: string) {
     await client.query("DELETE FROM seat_locks WHERE showtime_id = $1", [result.rows[0].showtime_id]);
 
     await client.query("COMMIT");
-    return result.rows[0];
+    emitSeatBooked(result.rows[0].showtime_id, seatIds);
+    return { ...result.rows[0], seat_ids: seatIds };
   } catch (error) {
     await client.query("ROLLBACK");
     throw error;
@@ -130,4 +145,32 @@ export async function listBookedSeatIds(showtimeId: string) {
     [showtimeId]
   );
   return result.rows.map((row) => row.seat_id as string);
+}
+
+export async function listBookingsAdmin() {
+  const result = await pool.query(
+    `SELECT b.id, b.status, b.payment_status, b.total_amount_cents, b.created_at,
+            u.id AS user_id, u.email, u.name,
+            m.title AS movie_title, h.name AS hall_name, s.starts_at
+     FROM bookings b
+     JOIN users u ON b.user_id = u.id
+     JOIN showtimes s ON b.showtime_id = s.id
+     JOIN movies m ON s.movie_id = m.id
+     JOIN halls h ON s.hall_id = h.id
+     ORDER BY b.created_at DESC
+     LIMIT 200`
+  );
+  return result.rows;
+}
+
+export async function updateBookingAdmin(bookingId: string, input: { status?: string; payment_status?: string }) {
+  const result = await pool.query(
+    `UPDATE bookings
+     SET status = COALESCE($1, status),
+         payment_status = COALESCE($2, payment_status)
+     WHERE id = $3
+     RETURNING id, status, payment_status, total_amount_cents`,
+    [input.status || null, input.payment_status || null, bookingId]
+  );
+  return result.rows[0] || null;
 }

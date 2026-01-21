@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../api/client";
 import { MovieCard } from "../components/MovieCard";
 
@@ -43,9 +43,11 @@ export function Movies() {
   }
 
   return (
-    <section className="container">
-      <h2>Now showing</h2>
-      <p>Curated picks with fresh showtimes.</p>
+    <section className="container section">
+      <div className="card">
+        <h2>Now showing</h2>
+        <p>Browse movie drops, pick a showtime, and lock your seats in real time.</p>
+      </div>
       <div className="grid movies">
         {movies.map((movie) => (
           <MovieCard key={movie.id} {...movie} />

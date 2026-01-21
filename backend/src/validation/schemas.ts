@@ -1,4 +1,4 @@
-﻿import { z } from "zod";
+import { z } from "zod";
 
 export const registerSchema = z.object({
   email: z.string().email(),
@@ -58,4 +58,18 @@ export const bookingInitiateSchema = z.object({
 export const paymentCreateSchema = z.object({
   booking_id: z.string().uuid(),
   provider: z.enum(["stripe"])
+});
+
+export const seatLockSchema = z.object({
+  seat_ids: z.array(z.string().uuid()).min(1)
+});
+
+export const adminUserUpdateSchema = z.object({
+  role: z.string().optional(),
+  status: z.string().optional()
+});
+
+export const adminBookingUpdateSchema = z.object({
+  status: z.string().optional(),
+  payment_status: z.string().optional()
 });

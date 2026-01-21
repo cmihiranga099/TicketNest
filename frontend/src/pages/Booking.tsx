@@ -1,6 +1,7 @@
-﻿import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { api, getToken } from "../api/client";
+import { getSocket } from "../api/socket";
 import { SeatMap } from "../components/SeatMap";
 import { Stepper } from "../components/Stepper";
 
@@ -28,12 +29,18 @@ type BookedSeatsResponse = {
   booked: string[];
 };
 
+type LocksResponse = {
+  locked: string[];
+  mine: string[];
+};
+
 export function Booking() {
   const { showtimeId } = useParams();
   const navigate = useNavigate();
   const [showtime, setShowtime] = useState<ShowtimeResponse["showtime"] | null>(null);
   const [seats, setSeats] = useState<SeatsResponse["seats"]>([]);
   const [booked, setBooked] = useState<string[]>([]);
+  const [locked, setLocked] = useState<string[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -51,12 +58,15 @@ export function Booking() {
         const showtimeData = await api.request<ShowtimeResponse>(`/showtimes/${showtimeId}`);
         const seatsData = await api.request<SeatsResponse>(`/halls/${showtimeData.showtime.hall_id}/seats`);
         const bookedData = await api.request<BookedSeatsResponse>(`/bookings/showtimes/${showtimeId}/seats`);
+        const locksData = await api.request<LocksResponse>(`/showtimes/${showtimeId}/locks`);
         if (!mounted) {
           return;
         }
         setShowtime(showtimeData.showtime);
         setSeats(seatsData.seats);
         setBooked(bookedData.booked || []);
+        setSelected(locksData.mine || []);
+        setLocked((locksData.locked || []).filter((seatId) => !locksData.mine?.includes(seatId)));
         setError(null);
       } catch (err) {
         if (!mounted) {
@@ -75,6 +85,47 @@ export function Booking() {
       mounted = false;
     };
   }, [showtimeId]);
+
+  useEffect(() => {
+    if (!showtimeId) {
+      return;
+    }
+    const socket = getSocket();
+    socket.emit("join_showtime", showtimeId);
+
+    const handleLocks = (payload: { seatIds: string[] }) => {
+      setLocked((prev) => {
+        const next = new Set(prev);
+        payload.seatIds.forEach((seatId) => {
+          if (!selected.includes(seatId)) {
+            next.add(seatId);
+          }
+        });
+        return Array.from(next);
+      });
+    };
+
+    const handleUnlocks = (payload: { seatIds: string[] }) => {
+      setLocked((prev) => prev.filter((seatId) => !payload.seatIds.includes(seatId)));
+    };
+
+    const handleBooked = (payload: { seatIds: string[] }) => {
+      setBooked((prev) => Array.from(new Set([...prev, ...payload.seatIds])));
+      setLocked((prev) => prev.filter((seatId) => !payload.seatIds.includes(seatId)));
+      setSelected((prev) => prev.filter((seatId) => !payload.seatIds.includes(seatId)));
+    };
+
+    socket.on("seat_locks", handleLocks);
+    socket.on("seat_unlocks", handleUnlocks);
+    socket.on("seat_booked", handleBooked);
+
+    return () => {
+      socket.off("seat_locks", handleLocks);
+      socket.off("seat_unlocks", handleUnlocks);
+      socket.off("seat_booked", handleBooked);
+      socket.emit("leave_showtime", showtimeId);
+    };
+  }, [showtimeId, selected]);
 
   const seatRows = useMemo(() => {
     const grouped: Record<string, Array<{ id: string; label: string; seat_number: number }>> = {};
@@ -110,10 +161,40 @@ export function Booking() {
     return (showtime.base_price_cents / 100) * selected.length;
   }, [showtime, selected]);
 
-  const toggleSeat = (seatId: string) => {
-    setSelected((prev) =>
-      prev.includes(seatId) ? prev.filter((seat) => seat !== seatId) : [...prev, seatId]
-    );
+  const lockSeat = async (seatId: string) => {
+    if (!showtimeId) {
+      return;
+    }
+    await api.request(`/showtimes/${showtimeId}/locks`, {
+      method: "POST",
+      body: JSON.stringify({ seat_ids: [seatId] })
+    });
+    setSelected((prev) => [...prev, seatId]);
+    setLocked((prev) => prev.filter((lockedSeat) => lockedSeat !== seatId));
+  };
+
+  const unlockSeat = async (seatId: string) => {
+    if (!showtimeId) {
+      return;
+    }
+    await api.request(`/showtimes/${showtimeId}/locks`, {
+      method: "DELETE",
+      body: JSON.stringify({ seat_ids: [seatId] })
+    });
+    setSelected((prev) => prev.filter((seat) => seat !== seatId));
+  };
+
+  const toggleSeat = async (seatId: string) => {
+    setError(null);
+    try {
+      if (selected.includes(seatId)) {
+        await unlockSeat(seatId);
+      } else {
+        await lockSeat(seatId);
+      }
+    } catch (err) {
+      setError((err as Error).message);
+    }
   };
 
   const handleContinue = async () => {
@@ -172,12 +253,18 @@ export function Booking() {
         <Stepper steps={steps} />
         <h2>Select seats for {showtime.movie_title}</h2>
         <p>{showtime.hall_name} - {new Date(showtime.starts_at).toLocaleString()}</p>
+        <div className="seat-legend">
+          <span><i className="seat-dot available" />Available</span>
+          <span><i className="seat-dot selected" />Selected</span>
+          <span><i className="seat-dot locked" />Locked</span>
+          <span><i className="seat-dot booked" />Booked</span>
+        </div>
       </div>
       <div className="card">
         <SeatMap
           rows={seatRows}
           booked={booked}
-          locked={[]}
+          locked={locked}
           selected={selected}
           onToggle={toggleSeat}
         />

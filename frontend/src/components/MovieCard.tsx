@@ -1,4 +1,4 @@
-﻿import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 type MovieCardProps = {
   id: string;
@@ -12,20 +12,27 @@ type MovieCardProps = {
 
 export function MovieCard({ id, title, genre, duration_min, rating, synopsis, poster_url }: MovieCardProps) {
   return (
-    <article className="card">
-      <div style={{
-        background: `url(${poster_url}) center/cover`,
-        height: 160,
-        borderRadius: 14,
-        marginBottom: 16
-      }} />
-      <h3>{title}</h3>
-      <p>{synopsis}</p>
-      <p className="badge">{genre} - {duration_min} min - {rating}</p>
-      <Link className="button" to={`/movies/${id}`}>
-        Explore
-      </Link>
+    <article className="card movie-card">
+      <div
+        className="movie-poster"
+        style={{
+          background: poster_url
+            ? `url(${poster_url}) center/cover`
+            : "linear-gradient(135deg, #1a2633, #ffb347)"
+        }}
+      />
+      <div className="movie-meta">
+        <h3>{title}</h3>
+        <p>{synopsis}</p>
+        <div className="movie-tags">
+          <span className="badge">{genre}</span>
+          <span className="tag ghost">{duration_min} min</span>
+          <span className="tag">{rating}</span>
+        </div>
+        <Link className="button small" to={`/movies/${id}`}>
+          View showtimes
+        </Link>
+      </div>
     </article>
   );
 }
-

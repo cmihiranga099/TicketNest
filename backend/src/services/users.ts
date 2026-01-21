@@ -1,4 +1,4 @@
-﻿import { pool } from "../db/pool.js";
+import { pool } from "../db/pool.js";
 import { hashPassword } from "../utils/password.js";
 
 export async function createUser(input: { email: string; phone?: string; name: string; password: string; role?: string }) {
@@ -64,6 +64,29 @@ export async function consumePasswordReset(token: string) {
      WHERE token = $1 AND used_at IS NULL AND expires_at > NOW()
      RETURNING user_id`,
     [token]
+  );
+  return result.rows[0] || null;
+}
+
+export async function listUsersAdmin() {
+  const result = await pool.query(
+    `SELECT id, email, phone, name, role, status, created_at
+     FROM users
+     ORDER BY created_at DESC
+     LIMIT 200`
+  );
+  return result.rows;
+}
+
+export async function updateUserAdmin(userId: string, input: { role?: string; status?: string }) {
+  const result = await pool.query(
+    `UPDATE users
+     SET role = COALESCE($1, role),
+         status = COALESCE($2, status),
+         updated_at = NOW()
+     WHERE id = $3
+     RETURNING id, email, phone, name, role, status`,
+    [input.role || null, input.status || null, userId]
   );
   return result.rows[0] || null;
 }
