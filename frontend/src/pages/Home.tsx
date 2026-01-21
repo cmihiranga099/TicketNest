@@ -8,42 +8,48 @@ const featured = [
     genre: "Sci-Fi",
     runtime: "128 min",
     rating: "PG-13",
-    tone: "citrus"
+    tone: "citrus",
+    poster: "https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=900&q=80"
   },
   {
     title: "Midnight Deli",
     genre: "Drama",
     runtime: "102 min",
     rating: "PG",
-    tone: "midnight"
+    tone: "midnight",
+    poster: "https://images.unsplash.com/photo-1517602302552-471fe67acf66?auto=format&fit=crop&w=900&q=80"
   },
   {
     title: "Copper Crown",
     genre: "Adventure",
     runtime: "140 min",
     rating: "PG-13",
-    tone: "copper"
+    tone: "copper",
+    poster: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=900&q=80"
   },
   {
     title: "Neon Tide",
     genre: "Thriller",
     runtime: "118 min",
     rating: "R",
-    tone: "neon"
+    tone: "neon",
+    poster: "https://images.unsplash.com/photo-1502134249126-9f3755a50d78?auto=format&fit=crop&w=900&q=80"
   },
   {
     title: "Skyline Run",
     genre: "Action",
     runtime: "110 min",
     rating: "PG-13",
-    tone: "skyline"
+    tone: "skyline",
+    poster: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=900&q=80"
   },
   {
     title: "Golden Vale",
     genre: "Family",
     runtime: "96 min",
     rating: "PG",
-    tone: "golden"
+    tone: "golden",
+    poster: "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=900&q=80"
   }
 ];
 
@@ -226,7 +232,10 @@ export function Home() {
         <div className="film-grid modern-grid">
           {featured.map((film) => (
             <div className="film-card" key={film.title}>
-              <div className={`film-poster ${film.tone}`} />
+              <div
+                className={`film-poster ${film.tone}`}
+                style={{ backgroundImage: `linear-gradient(180deg, rgba(10, 12, 16, 0.1), rgba(10, 12, 16, 0.75)), url(${film.poster})` }}
+              />
               <div className="film-meta">
                 <div className="film-top">
                   <h3>{film.title}</h3>
@@ -352,8 +361,8 @@ export function Home() {
         </div>
         <div className="grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}>
           <div className="card">
-            <h3>KCC Multiplex</h3>
-            <p>Level 4, KCC Mall, Colombo 4</p>
+            <h3>TicketNest Multiplex</h3>
+            <p>Level 4, TicketNest Mall, Colombo 4</p>
           </div>
           <div className="card">
             <h3>Galle City</h3>

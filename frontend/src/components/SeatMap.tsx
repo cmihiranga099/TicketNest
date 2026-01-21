@@ -21,7 +21,6 @@ export function SeatMap({ rows, booked, locked, selected, onToggle }: SeatMapPro
     <div className="seat-map">
       {rows.map((row) => (
         <div className="seat-row" key={row.rowLabel}>
-          <strong>{row.rowLabel}</strong>
           {row.seats.map((seat) => {
             const isBooked = booked.includes(seat.id);
             const isLocked = locked.includes(seat.id);
@@ -38,7 +37,9 @@ export function SeatMap({ rows, booked, locked, selected, onToggle }: SeatMapPro
                 onClick={() => onToggle(seat.id)}
                 aria-label={`Seat ${seat.label}`}
                 title={`Seat ${seat.label}`}
-              />
+              >
+                {seat.label}
+              </button>
             );
           })}
         </div>

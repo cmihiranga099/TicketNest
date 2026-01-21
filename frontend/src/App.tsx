@@ -11,10 +11,12 @@ import { AdminDashboard } from "./pages/AdminDashboard";
 import { SignIn } from "./pages/SignIn";
 import { SignUp } from "./pages/SignUp";
 import { Contact } from "./pages/Contact";
+import { ThreeBackground } from "./components/ThreeBackground";
 
 export function App() {
   return (
     <div className="app-shell">
+      <ThreeBackground />
       <Navbar />
       <main className="main">
         <Routes>

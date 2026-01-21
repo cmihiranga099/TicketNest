@@ -15,7 +15,7 @@ export function Contact() {
     <section className="container grid" style={{ gap: 24, gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}>
       <div className="card">
         <h2>Contact us</h2>
-        <p>Reach the KCC Multiplex team for group bookings, feedback, or support.</p>
+        <p>Reach the TicketNest team for group bookings, feedback, or support.</p>
         <div className="grid" style={{ gap: 12 }}>
           <div>
             <strong>Phone</strong>
@@ -27,7 +27,7 @@ export function Contact() {
           </div>
           <div>
             <strong>Address</strong>
-            <p>Level 4, KCC Mall, Colombo 4</p>
+            <p>Level 4, TicketNest Mall, Colombo 4</p>
           </div>
         </div>
       </div>

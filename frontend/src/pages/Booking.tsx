@@ -261,6 +261,7 @@ export function Booking() {
         </div>
       </div>
       <div className="card">
+        <div className="seat-screen">Screen</div>
         <SeatMap
           rows={seatRows}
           booked={booked}
