@@ -13,22 +13,26 @@ paymentsRouter.post("/create", requireAuth, async (req, res) => {
     return res.status(400).json({ error: parsed.error.flatten() });
   }
 
-  const booking = await getBookingById(parsed.data.booking_id);
-  if (!booking) {
-    return res.status(404).json({ error: "Booking not found" });
-  }
-  if (booking.user_id !== req.user!.id) {
-    return res.status(403).json({ error: "Not allowed" });
-  }
+  try {
+    const booking = await getBookingById(parsed.data.booking_id);
+    if (!booking) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+    if (booking.user_id !== req.user!.id) {
+      return res.status(403).json({ error: "Not allowed" });
+    }
 
-  const response = await createStripeCheckout({
-    booking_id: booking.id,
-    amount_cents: booking.total_amount_cents,
-    description: `Booking ${booking.id}`,
-    customer_email: req.user!.email
-  });
+    const response = await createStripeCheckout({
+      booking_id: booking.id,
+      amount_cents: booking.total_amount_cents,
+      description: `Booking ${booking.id}`,
+      customer_email: req.user!.email
+    });
 
-  res.json(response);
+    return res.json(response);
+  } catch (error) {
+    return res.status(500).json({ error: (error as Error).message });
+  }
 });
 
 paymentsRouter.post("/webhook", async (req, res) => {
