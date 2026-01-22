@@ -1,5 +1,6 @@
 const RAW_API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const DEFAULT_API_BASE_URL = import.meta.env.DEV ? "http://localhost:4000" : "";
+const SHOULD_GUARD_LOCALHOST = !RAW_API_BASE_URL;
 
 const LOCAL_HOSTNAMES = new Set(["localhost", "127.0.0.1", "0.0.0.0"]);
 
@@ -16,6 +17,9 @@ function resolveBaseUrl() {
     return DEFAULT_API_BASE_URL;
   }
   if (typeof window === "undefined") {
+    return normalized;
+  }
+  if (!SHOULD_GUARD_LOCALHOST) {
     return normalized;
   }
   try {
