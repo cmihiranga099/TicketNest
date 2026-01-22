@@ -1,4 +1,35 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
+const RAW_API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const DEFAULT_API_BASE_URL = import.meta.env.DEV ? "http://localhost:4000" : "";
+
+const LOCAL_HOSTNAMES = new Set(["localhost", "127.0.0.1", "0.0.0.0"]);
+
+function normalizeBaseUrl(value: string | undefined) {
+  if (!value) {
+    return "";
+  }
+  return value.replace(/\/+$/, "");
+}
+
+function resolveBaseUrl() {
+  const normalized = normalizeBaseUrl(RAW_API_BASE_URL);
+  if (!normalized) {
+    return DEFAULT_API_BASE_URL;
+  }
+  if (typeof window === "undefined") {
+    return normalized;
+  }
+  try {
+    const parsed = new URL(normalized, window.location.origin);
+    if (LOCAL_HOSTNAMES.has(parsed.hostname) && !LOCAL_HOSTNAMES.has(window.location.hostname)) {
+      return "";
+    }
+  } catch {
+    return normalized;
+  }
+  return normalized;
+}
+
+const API_BASE_URL = resolveBaseUrl();
 
 export function getApiBaseUrl() {
   return API_BASE_URL;

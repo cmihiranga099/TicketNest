@@ -1374,9 +1374,39 @@ textarea.input {
   }
 }
 
+@media (max-width: 960px) {
+  .section-head,
+  .panel-header,
+  .admin-panel-head {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .ticket-card {
+    flex-wrap: wrap;
+  }
+
+  .admin-hero-actions,
+  .admin-hero-foot {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+}
+
 @media (max-width: 720px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
   .navbar nav {
-    display: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 16px;
   }
 
   .admin-sidebar {
@@ -1392,6 +1422,43 @@ textarea.input {
     padding: 28px;
   }
 
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-actions .button {
+    width: 100%;
+  }
+
+  .hero-actions .button {
+    min-width: 140px;
+  }
+
+  .section-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .section-head .button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .seat-map {
+    overflow-x: auto;
+  }
+
+  .seat-row {
+    width: max-content;
+  }
+
+  .seat {
+    min-width: 44px;
+    height: 30px;
+    font-size: 0.7rem;
+  }
+
   .schedule-row.modern {
     flex-direction: column;
     align-items: flex-start;
@@ -1400,5 +1467,55 @@ textarea.input {
   .schedule-right {
     flex-wrap: wrap;
     justify-content: flex-start;
+  }
+
+  .admin-list-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 560px) {
+  .hero-rail,
+  .hero-slate,
+  .admin-hero {
+    padding: 20px;
+  }
+
+  .hero-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .panel-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ticket-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ticket-meta {
+    width: 100%;
+    text-align: left;
+  }
+
+  .schedule-right {
+    width: 100%;
+  }
+
+  .ticket-card {
+    align-items: flex-start;
+  }
+
+  .ticket-meta {
+    text-align: left;
+  }
+
+  .seat {
+    min-width: 38px;
+    height: 28px;
+    font-size: 0.65rem;
   }
 }
