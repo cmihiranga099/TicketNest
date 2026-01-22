@@ -1,10 +1,20 @@
-﻿import Stripe from "stripe";
+import Stripe from "stripe";
 import { pool } from "../db/pool.js";
 
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY || "";
-const stripe = new Stripe(stripeSecretKey, {
-  apiVersion: "2024-06-20"
-});
+let cachedStripe: Stripe | null = null;
+let cachedStripeKey = "";
+
+function getStripeClient() {
+  const stripeSecretKey = process.env.STRIPE_SECRET_KEY || "";
+  if (!stripeSecretKey) {
+    throw new Error("STRIPE_SECRET_KEY is not configured");
+  }
+  if (!cachedStripe || cachedStripeKey !== stripeSecretKey) {
+    cachedStripe = new Stripe(stripeSecretKey, { apiVersion: "2024-06-20" });
+    cachedStripeKey = stripeSecretKey;
+  }
+  return cachedStripe;
+}
 
 export async function createStripeCheckout(input: {
   booking_id: string;
@@ -13,10 +23,7 @@ export async function createStripeCheckout(input: {
   description: string;
   customer_email?: string;
 }) {
-  if (!stripeSecretKey) {
-    throw new Error("STRIPE_SECRET_KEY is not configured");
-  }
-
+  const stripe = getStripeClient();
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
     payment_method_types: ["card"],
