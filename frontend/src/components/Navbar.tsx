@@ -4,6 +4,7 @@ import { isAdmin, subscribeAuthChange } from "../api/client";
 
 export function Navbar() {
   const [showAdmin, setShowAdmin] = useState(isAdmin());
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const update = () => setShowAdmin(isAdmin());
@@ -16,7 +17,21 @@ export function Navbar() {
       <Link className="logo" to="/">
         TicketNest
       </Link>
-      <nav>
+      <button
+        className="nav-toggle"
+        type="button"
+        aria-controls="primary-nav"
+        aria-expanded={menuOpen}
+        onClick={() => setMenuOpen((prev) => !prev)}
+      >
+        <span className="sr-only">{menuOpen ? "Close menu" : "Open menu"}</span>
+        <span className={`nav-icon ${menuOpen ? "open" : ""}`} aria-hidden="true">
+          <span className="bar" />
+          <span className="bar" />
+          <span className="bar" />
+        </span>
+      </button>
+      <nav id="primary-nav" className={menuOpen ? "open" : ""}>
         <Link to="/">Home</Link>
         <Link className="button nav-cta" to="/booking/s1">Buy Tickets</Link>
         <Link to="/movies">Movies</Link>

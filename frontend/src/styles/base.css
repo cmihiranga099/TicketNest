@@ -321,6 +321,60 @@ button {
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+.nav-toggle {
+  display: none;
+  border: 1px solid rgba(247, 245, 239, 0.35);
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: rgba(10, 14, 20, 0.6);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 40px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.nav-icon {
+  display: grid;
+  gap: 4px;
+}
+
+.nav-icon .bar {
+  width: 18px;
+  height: 2px;
+  background: var(--ink);
+  border-radius: 999px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.nav-icon.open .bar:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.nav-icon.open .bar:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-icon.open .bar:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
 .navbar .logo {
   font-family: var(--font-display);
   font-size: 1.6rem;
@@ -1400,13 +1454,30 @@ textarea.input {
     gap: 12px;
   }
 
+  .nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
   .navbar nav {
-    display: flex;
+    display: none;
     flex-wrap: wrap;
     gap: 12px;
     width: 100%;
     padding: 12px;
     border-radius: 16px;
+    align-items: stretch;
+  }
+
+  .navbar nav.open {
+    display: flex;
+  }
+
+  .navbar nav a {
+    display: block;
+    width: 100%;
+    text-align: center;
   }
 
   .admin-sidebar {
@@ -1447,10 +1518,12 @@ textarea.input {
 
   .seat-map {
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .seat-row {
     width: max-content;
+    grid-auto-columns: 44px;
   }
 
   .seat {
@@ -1476,6 +1549,10 @@ textarea.input {
 }
 
 @media (max-width: 560px) {
+  .card {
+    padding: 18px;
+  }
+
   .hero-rail,
   .hero-slate,
   .admin-hero {
@@ -1517,5 +1594,9 @@ textarea.input {
     min-width: 38px;
     height: 28px;
     font-size: 0.65rem;
+  }
+
+  .seat-row {
+    grid-auto-columns: 38px;
   }
 }
