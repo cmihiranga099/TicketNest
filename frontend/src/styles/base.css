@@ -1538,6 +1538,29 @@ textarea.input {
     font-size: 0.7rem;
   }
 
+  .hero-metrics {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+
+  .booking-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .schedule-grid.modern {
+    padding: 8px;
+  }
+
+  .schedule-right .button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .experience-grid,
+  .offer-grid,
+  .film-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+
   .schedule-row.modern {
     flex-direction: column;
     align-items: flex-start;
@@ -1583,6 +1606,14 @@ textarea.input {
     padding: 20px;
   }
 
+  .hero-title {
+    font-size: clamp(2.1rem, 7vw, 3.2rem);
+  }
+
+  .hero-copy {
+    font-size: 0.98rem;
+  }
+
   .hero-metrics {
     grid-template-columns: 1fr;
   }
@@ -1622,5 +1653,152 @@ textarea.input {
 
   .seat-row {
     grid-auto-columns: 38px;
+  }
+
+  .hero-panel {
+    padding: 20px;
+  }
+
+  .metric-card {
+    padding: 10px 12px;
+  }
+
+  .ticket-card {
+    width: 100%;
+  }
+
+  .ticket-meta {
+    width: 100%;
+  }
+
+  .section {
+    gap: 18px;
+  }
+
+  .section-head {
+    gap: 10px;
+  }
+
+  .hero-actions .button,
+  .section-head .button,
+  .schedule-right .button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-rail,
+  .hero-slate,
+  .admin-hero {
+    padding: 16px;
+  }
+
+  .hero-actions {
+    gap: 10px;
+  }
+
+  .hero-panel {
+    padding: 20px;
+  }
+
+  .ticket-card {
+    gap: 10px;
+  }
+
+  .hero-actions {
+    gap: 8px;
+  }
+
+  .quick-booking {
+    padding: 18px;
+  }
+
+  .film-poster {
+    height: 160px;
+  }
+
+  .schedule-row.modern {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 380px) {
+  .main {
+    padding: 20px 4vw 40px;
+  }
+
+  .hero-title {
+    font-size: clamp(1.9rem, 8vw, 2.8rem);
+  }
+
+  .hero-copy {
+    font-size: 0.92rem;
+  }
+
+  .hero-rail,
+  .hero-slate {
+    padding: 14px;
+  }
+
+  .hero-actions .button {
+    font-size: 0.9rem;
+    padding: 12px 18px;
+  }
+
+  .tag,
+  .badge {
+    font-size: 0.7rem;
+  }
+
+  .schedule-right {
+    gap: 8px;
+  }
+
+  .film-grid,
+  .offer-grid,
+  .experience-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 375px) {
+  .hero-title {
+    font-size: clamp(1.8rem, 8.5vw, 2.6rem);
+  }
+
+  .hero-rail,
+  .hero-slate {
+    padding: 12px;
+  }
+
+  .hero-actions .button {
+    padding: 11px 16px;
+  }
+
+  .film-poster {
+    height: 150px;
+  }
+}
+
+@media (max-width: 320px) {
+  .main {
+    padding: 18px 3vw 36px;
+  }
+
+  .hero-title {
+    font-size: clamp(1.6rem, 9vw, 2.3rem);
+  }
+
+  .hero-copy {
+    font-size: 0.88rem;
+  }
+
+  .hero-actions .button {
+    font-size: 0.85rem;
+    padding: 10px 14px;
+  }
+
+  .film-poster {
+    height: 140px;
   }
 }
