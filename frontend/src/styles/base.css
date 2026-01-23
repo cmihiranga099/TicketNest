@@ -127,6 +127,10 @@ button {
   gap: 24px;
 }
 
+.w-full {
+  width: 100%;
+}
+
 .grid.movies {
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
@@ -875,6 +879,8 @@ textarea.input {
   align-items: center;
   border-bottom: 1px solid rgba(247, 245, 239, 0.08);
   padding-bottom: 10px;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .schedule-row.modern {
@@ -1537,6 +1543,11 @@ textarea.input {
     align-items: flex-start;
   }
 
+  .schedule-row:not(.modern) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .schedule-right {
     flex-wrap: wrap;
     justify-content: flex-start;
@@ -1549,6 +1560,19 @@ textarea.input {
 }
 
 @media (max-width: 560px) {
+  .movie-poster {
+    height: 200px;
+  }
+
+  .admin-actions .button,
+  .admin-list-item .button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .admin-list-item {
+    gap: 12px;
+  }
   .card {
     padding: 18px;
   }
